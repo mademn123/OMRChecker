@@ -45,6 +45,12 @@ class Template:
                 "pageDimensions",
             ],
         )
+        # reads user input from json file
+        output_columns_object = json_object.get("outputColumns", {})
+
+        self.sort_type = output_columns_object.get("sortType", "alphanumeric")
+        self.sort_order = output_columns_object.get("sortOrder", "asc").lower()
+        self.custom_columns = output_columns_object.get("columns", [])
 
         self.parse_output_columns(output_columns_array)
         self.setup_pre_processors(pre_processors_object, template_path.parent)
@@ -119,10 +125,11 @@ class Template:
 
     def fill_output_columns(self, non_custom_columns, all_custom_columns):
         all_template_columns = non_custom_columns + all_custom_columns
-        # Typical case: sort alpha-numerical (natural sort)
-        self.output_columns = sorted(
-            all_template_columns, key=custom_sort_output_columns
-        )
+        if self.sort_type.lower() == "custom":
+            sorted_columns = self.custom_columns
+        else:
+            sorted_columns = sorted(all_template_columns, key=lambda x: custom_sort_output_columns(x, self.sort_type), reverse=(self.sort_order == "DESC"))
+        self.output_columns = sorted_columns
 
     def validate_template_columns(self, non_custom_columns, all_custom_columns):
         output_columns_set = set(self.output_columns)

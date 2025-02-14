@@ -31,5 +31,11 @@
       "labelsGap": 52,
       "bubblesGap": 41
     }
+  },
+  "outputColumns": {
+    "sortType": "alphanumeric",
+    "sortOrder": "asc",
+    "columns": []
+
   }
 }

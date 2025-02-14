@@ -53,9 +53,31 @@ TEMPLATE_SCHEMA = {
             },
         },
         "outputColumns": {
-            "type": "array",
-            "items": FIELD_STRING_TYPE,
-            "description": "The ordered list of columns to be contained in the output csv(default order: alphabetical)",
+            "type": "object",
+            "description": "Sorting options for output columns.",
+            "properties": {
+                "sortType": {
+                    "type": "string",
+                    "enum": ["alphabetical", "alphanumeric", "custom"],
+                    "description": "Defines sorting behavior. 'alphanumeric' sorts numbers properly, 'alphabetical' sorts lexicographically, 'custom' follows user-defined order."
+                },
+                "sortOrder": {
+                    "type": "string",
+                    "enum": ["asc", "desc"],
+                    "description": "Defines sorting order: 'asc' for ascending, 'desc' for descending."
+                },
+                "columns": {
+                    "type": "array",
+                    "items": FIELD_STRING_TYPE,
+                    "description": "Custom column order (only required if sortType is 'custom')."
+                }
+            },
+            "if": {
+                "properties": {"sortType": {"const": "custom"}}
+            },
+            "then": {
+                "required": ["columns"]
+            }
         },
         "pageDimensions": {
             **two_positive_integers,

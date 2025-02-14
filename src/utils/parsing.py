@@ -102,7 +102,11 @@ def parse_field_string(field_string):
 
 def custom_sort_output_columns(field_label):
     label_prefix, label_suffix = re.findall(FIELD_LABEL_NUMBER_REGEX, field_label)[0]
-    return [label_prefix, int(label_suffix) if len(label_suffix) > 0 else 0]
+    if sort_type == "alphanumeric":
+        return [label_prefix, int(label_suffix) if len(label_suffix) > 0 else 0]
+    elif sort_type == "alphabetical":
+        return (label_prefix + label_suffix,)
+
 
 
 def parse_float_or_fraction(result):
